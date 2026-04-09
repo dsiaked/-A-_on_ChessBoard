@@ -79,15 +79,15 @@ def build_ar_object_geometry(board_pattern, cell_size):
 
     # A는 x-z 평면에 세운 뒤 y축 방향으로 두께를 주어 입체화
     z_base = -min(board_w, board_h) * 0.04
-    z_top = -min(board_w, board_h) * 0.72
-    z_cross = -min(board_w, board_h) * 0.40
+    z_top = -min(board_w, board_h) * 0.62
+    z_cross = -min(board_w, board_h) * 0.36
 
     cross_left = board_w * 0.43
     cross_right = board_w * 0.57
 
     y_center = board_h * 0.52
-    beam_depth = board_h * 0.24
-    beam_width = min(board_w, board_h) * 0.115
+    beam_depth = board_h * 0.14
+    beam_width = min(board_w, board_h) * 0.11
 
     left_base = np.array([x_left, z_base], dtype=np.float32)
     apex = np.array([x_center, z_top], dtype=np.float32)
@@ -175,9 +175,21 @@ def build_ar_object_geometry(board_pattern, cell_size):
     shadow_vertices[:, 2] = 0.0
     shadow_vertices[:, 1] += beam_depth * 0.85
 
+    anchor_points = np.array(
+        [
+            [x_left, y_center + beam_depth * 0.52, z_base],
+            [x_center, y_center + beam_depth * 0.52, z_top],
+            [x_right, y_center + beam_depth * 0.52, z_base],
+            [cross_left, y_center + beam_depth * 0.52, z_cross],
+            [cross_right, y_center + beam_depth * 0.52, z_cross],
+        ],
+        dtype=np.float32,
+    )
+
     return {
         "vertices": vertices_arr,
         "shadow_vertices": shadow_vertices,
+        "anchor_points": anchor_points,
         "faces": faces,
         "edges": edges,
         "colors": colors,
@@ -259,6 +271,27 @@ def draw_letter_a_ar(frame, projected_vertices, rvec, tvec, K, dist_coeff, ar_ge
             tuple(projected_vertices[e]),
             (255, 245, 210),
             5,
+            lineType=cv.LINE_AA,
+        )
+
+    # 최종 실루엣을 강조해 어떤 시점에서도 A 형태가 명확하게 보이도록 보강
+    anchors2d = project_points(ar_geometry["anchor_points"], rvec, tvec, K, dist_coeff)
+    a_edges = [(0, 1), (1, 2), (3, 4)]
+    for s, e in a_edges:
+        cv.line(
+            frame,
+            tuple(anchors2d[s]),
+            tuple(anchors2d[e]),
+            (30, 40, 210),
+            16,
+            lineType=cv.LINE_AA,
+        )
+        cv.line(
+            frame,
+            tuple(anchors2d[s]),
+            tuple(anchors2d[e]),
+            (250, 220, 120),
+            7,
             lineType=cv.LINE_AA,
         )
 

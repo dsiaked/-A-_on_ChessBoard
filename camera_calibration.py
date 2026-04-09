@@ -115,6 +115,10 @@ def calib_camera_from_chessboard(image_paths, board_pattern, board_cellsize, sho
 
 
 def save_calibration(output_path, board_pattern, board_cellsize, rms, mean_reproj_error, K, dist_coeff, used_files):
+    out_dir = os.path.dirname(output_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+
     np.savez(
         output_path,
         board_pattern=np.array(board_pattern, dtype=np.int32),
@@ -133,7 +137,7 @@ def parse_args():
     parser.add_argument("--board_cols", type=int, default=8, help="내부 코너 가로 개수 (예: 사각형 9칸이면 8)")
     parser.add_argument("--board_rows", type=int, default=6, help="내부 코너 세로 개수 (예: 사각형 7칸이면 6)")
     parser.add_argument("--cell_size", type=float, default=0.025, help="체스보드 한 칸 실제 크기(미터)")
-    parser.add_argument("--output", default="calibration_result.npz", help="캘리브레이션 결과 저장 파일")
+    parser.add_argument("--output", default="data/calibration/calibration_result.npz", help="캘리브레이션 결과 저장 파일")
     parser.add_argument("--preview", action="store_true", help="코너 검출 미리보기 표시")
     return parser.parse_args()
 

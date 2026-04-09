@@ -13,6 +13,15 @@ def load_calibration(calib_file):
             "먼저 camera_calibration.py를 실행해 calibration_result.npz를 생성하세요."
         )
     data = np.load(calib_file, allow_pickle=True)
+    required_keys = ["K", "dist_coeff"]
+    missing = [k for k in required_keys if k not in data]
+    if missing:
+        raise KeyError(
+            "캘리브레이션 파일에 필수 항목이 없습니다: "
+            + ", ".join(missing)
+            + "\n필수: K, dist_coeff"
+        )
+
     K = data["K"]
     dist_coeff = data["dist_coeff"]
     return K, dist_coeff
@@ -161,7 +170,7 @@ def parse_args():
         default="distortion_results",
         help="출력 경로(이미지 배치 시 폴더 권장)",
     )
-    parser.add_argument("--calib", default="calibration_result.npz", help="캘리브레이션 결과 파일")
+    parser.add_argument("--calib", default="data/calibration/calibration_result.npz", help="캘리브레이션 결과 파일")
     parser.add_argument("--no_show", action="store_true", help="미리보기 창 비활성화")
     return parser.parse_args()
 

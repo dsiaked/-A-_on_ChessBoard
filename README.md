@@ -1,17 +1,17 @@
-# Rectangle_on_ChessBoard
+# 3D_A_on_Chessboard
 
-카메라 캘리브레이션 결과를 사용해 체스보드의 자세를 추정하고, 체스보드 위에 AR 물체를 표시하는 코드입니다.
+카메라 캘리브레이션 결과를 사용해 체스보드의 자세를 추정하고, 체스보드 위에 세워진 입체 알파벳 A AR 물체를 표시하는 코드입니다.
 
 ## 목표
 
 - 내 카메라 캘리브레이션 결과를 이용해 camera pose estimation 수행
-- 체스보드 위에 AR 물체(예제와 다른 형태)를 시각화
+- 체스보드 위에 눈에 잘 보이는 입체 AR 물체(알파벳 A)를 시각화
 - README에 AR 결과 데모 이미지 포함
 
 ## 폴더 구성
 
 - `camera_calibration.py`: 체스보드 이미지로 캘리브레이션 수행
-- `pose_estimation_chessboard.py`: pose 추정 후 AR 물체(집 모양 3D) 오버레이
+- `pose_estimation_chessboard.py`: pose 추정 후 AR 물체(세워진 입체 알파벳 A) 오버레이
 - `data/chessboard/`: 캘리브레이션/테스트용 체스보드 이미지
 - `data/calibration/calibration_result.npz`: 캘리브레이션 결과
 - `ar_results/`: AR 결과 이미지 저장 폴더
@@ -28,7 +28,7 @@ python camera_calibration.py
 
 - `data/calibration/calibration_result.npz`
 
-2. Camera Pose Estimation + AR 실행(이미지)
+2. Camera Pose Estimation + AR 실행(이미지, 알파벳 A)
 
 ```bash
 python pose_estimation_chessboard.py --mode image --input data/chessboard/chess_*.jpg --output ar_results --calib data/calibration/calibration_result.npz
@@ -44,7 +44,7 @@ python pose_estimation_chessboard.py --mode image --input data/chessboard/chess_
 ## AR 자산(에셋) 필요 여부
 
 - 별도 AR asset 파일은 필요하지 않습니다.
-- 현재 코드는 체스보드 위에 집 모양 3D AR 오브젝트를 직접 그립니다.
+- 현재 코드는 체스보드 위에 두께 있는 세워진 알파벳 A 3D AR 오브젝트를 직접 그립니다.
 - 나중에 커스텀 모델을 쓰고 싶을 때만 별도 자산 파일을 추가하면 됩니다.
 
 ## 결과물 설명
@@ -53,7 +53,7 @@ python pose_estimation_chessboard.py --mode image --input data/chessboard/chess_
   - `K`, `dist_coeff` 포함
 - `ar_results/chess_01_pose_ar.jpg` ~ `ar_results/chess_05_pose_ar.jpg`
   - 체스보드 코너 기반 pose estimation 결과
-  - 체스보드 위 AR 물체 오버레이 결과
+  - 체스보드 위 두께감 있는 세워진 입체 알파벳 A AR 물체 오버레이 결과
 
 ## AR 결과 이미지
 
